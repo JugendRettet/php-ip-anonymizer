@@ -1,6 +1,9 @@
+#!/usr/bin/env php
 <?php
 
-namespace geertw\IpAnonymizer;
+if (isset($argv[1])) {
+  $delimiter = $argv[1];
+}
 
 class IpAnonymizer {
     /**
@@ -11,7 +14,7 @@ class IpAnonymizer {
     /**
      * @var string IPv6 netmask used to anonymize IPv6 address.
      */
-    public $ipv6NetMask = "ffff:ffff:ffff:ffff:0000:0000:0000:0000";
+    public $ipv6NetMask = "ffff:ffff:ffff:0000:0000:0000:0000:0000";
 
     /**
      * Anonymize an IPv4 or IPv6 address.
@@ -60,3 +63,36 @@ class IpAnonymizer {
         return inet_ntop(inet_pton($address) & inet_pton($this->ipv6NetMask));
     }
 }
+
+$ipAnonymizer = new IpAnonymizer();
+
+/* read line for line from stdin */
+while($line = fgets(STDIN)){
+  /* whether a delimiter was given */
+  if (isset($delimiter)) {
+    $pieces = explode($delimiter, $line, 2);
+    $ip = $pieces[0];
+    /* whether there is anything else on the line after the delimiter */
+    if (isset($pieces[1])) {
+      /* put back in the delimiter, so that only the IP will have changed */
+      $rest = "$delimiter$pieces[1]";
+    }
+  /* if not, the whole line is considered an IP */
+  } else {
+    $ip = $line;
+  }
+  /* whether the given string is a valid IP */
+  /* if yes, anonymize */
+  if (filter_var($ip, FILTER_VALIDATE_IP)) {
+    $anonip = $ipAnonymizer->anonymize($ip);
+    print "$anonip";
+    if (isset($rest)) {
+      print "$rest";
+    }
+  /* if not, just print the line */
+  } else {
+    print "$line";
+  }
+}
+
+?>
