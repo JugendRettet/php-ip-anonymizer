@@ -14,7 +14,8 @@ For instance, the IPv4 address `192.168.178.123` is anonymized by default to `19
 The IPv6 address `2001:0db8:85a3:08d3:1319:8a2e:0370:7347` is anonymized by default to `2001:0db8:85a3::`.
 
 The IP address is expected to occur on the beginning of the line. A delimiter
-can can be given as argument.
+can can be given as first argument. The output will be written to a file
+when given as second argument.
 
 ## Example
 

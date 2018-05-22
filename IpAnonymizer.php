@@ -5,6 +5,11 @@ if (isset($argv[1])) {
   $delimiter = $argv[1];
 }
 
+if (isset($argv[2])) {
+  $file = $argv[2];
+}
+
+
 class IpAnonymizer {
     /**
      * @var string IPv4 netmask used to anonymize IPv4 address.
@@ -85,13 +90,19 @@ while($line = fgets(STDIN)){
   /* if yes, anonymize */
   if (filter_var($ip, FILTER_VALIDATE_IP)) {
     $anonip = $ipAnonymizer->anonymize($ip);
-    print "$anonip";
+    $anonline = $anonip;
     if (isset($rest)) {
-      print "$rest";
+      $anonline .= $rest;
     }
   /* if not, just print the line */
   } else {
-    print "$line";
+    $anonline = $line;
+  }
+
+  if (isset($file)) {
+    file_put_contents($file, $anonline, FILE_APPEND);
+  } else {
+    print "$anonline";
   }
 }
 
